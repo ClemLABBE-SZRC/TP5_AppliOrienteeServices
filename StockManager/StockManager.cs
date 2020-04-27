@@ -6,22 +6,33 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace StockManager
 {
     class StockManager
     {
-        private static string filename = "stock.json";
+        private static string filename = @"stock.json";
         private List<ItemLine> stock;
         public StockManager()
         {
             stock = new List<ItemLine>();
-            stock.Add(new ItemLine(new Item("banane", 0.5f), 5));
-            stock.Add(new ItemLine(new Item("kiwi", 1f), 10));
+            LoadStock();
         }
-        public void LoadStock(string filename)
+        public void LoadStock()
         {
-            // TODO
+            JArray products = JArray.Parse(File.ReadAllText(filename));
+            foreach (JObject prod in products)
+            {
+                try
+                {
+                    stock.Add(new ItemLine(new Item((string)prod["name"], (float)prod["price"]), (int)prod["quantity"]));
+                }
+                catch(Exception)
+                {
+                    Console.WriteLine("Fail to load line: {}", prod.ToString());
+                }
+            }
         }
         private ItemLine ReserveItem(int quantity, string name)
         {

@@ -14,7 +14,7 @@ namespace StockSDK
         }
         public override string ToString()
         {
-            return $"Item: [{Item}], Quantity: {Quantity}";
+            return $"{Item}, Quantity: {Quantity}";
         }
     }
 }
