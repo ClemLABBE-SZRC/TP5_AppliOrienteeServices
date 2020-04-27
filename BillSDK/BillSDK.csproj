@@ -1,10 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\AppECommerce\AppECommerce.csproj" />
-    <ProjectReference Include="..\BillManager\BillManager.csproj" />
-    <ProjectReference Include="..\StockManager\StockManager.csproj" />
-    <ProjectReference Include="..\UserManager\UserManager.csproj" />
     <ProjectReference Include="..\UserSDK\UserSDK.csproj" />
     <ProjectReference Include="..\StockSDK\StockSDK.csproj" />
   </ItemGroup>
