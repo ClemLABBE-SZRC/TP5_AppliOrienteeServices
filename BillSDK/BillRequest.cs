@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using StockSDK;
+using UserSDK;
 
-namespace BillManager
+namespace BillSDK
 {
-    class BillRequest
+    public class BillRequest
     {
         private List<ItemLine> itemLines;
         private User user;

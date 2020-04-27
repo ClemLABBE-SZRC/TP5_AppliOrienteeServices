@@ -1,7 +1,7 @@
 [
   { "name": "banane", "price": 0.3, "quantity": 4 },
-  { "name": "poulet", "price": 0.3, "quantity": 15 },
-  { "name": "kiwi", "price": 0.3, "quantity": 12 },
-  { "name": "riz", "price": 0.3, "quantity": 2 },
-  { "name": "pates", "price": 0.3, "quantity": 1 }
+  { "name": "poulet", "price": 3, "quantity": 15 },
+  { "name": "kiwi", "price": 1, "quantity": 12 },
+  { "name": "riz", "price": 2, "quantity": 2 },
+  { "name": "pates", "price": 1.5, "quantity": 1 }
 ]

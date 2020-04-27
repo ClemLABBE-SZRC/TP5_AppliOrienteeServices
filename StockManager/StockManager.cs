@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
 using StockSDK;
 using RabbitMQ.Client;
@@ -26,7 +26,10 @@ namespace StockManager
             {
                 try
                 {
-                    stock.Add(new ItemLine(new Item((string)prod["name"], (float)prod["price"]), (int)prod["quantity"]));
+                    stock.Add(new ItemLine(
+                        new Item((string)prod["name"], (float)prod["price"]),
+                        (int)prod["quantity"])
+                    );
                 }
                 catch (Exception)
                 {
@@ -66,14 +69,14 @@ namespace StockManager
             }
             return true;
         }
-        public static object HandleRequest(string jsonRequest, StockManager stockManager)
+        public object HandleRequest(string jsonRequest)
         {
             object result = null;
             JObject request = JObject.Parse(jsonRequest);
             if (request["Item"] != null)
             {
                 ItemLine itemLine = request.ToObject<ItemLine>();
-                bool release = stockManager.ReleaseItem(itemLine);
+                bool release = ReleaseItem(itemLine);
                 if (release)
                 {
                     Console.WriteLine(" [.] Release product: {0}", itemLine);
@@ -82,7 +85,7 @@ namespace StockManager
             }
             else
             {
-                result = stockManager.ReserveItem((int)request["quantity"], (string)request["name"]);
+                result = ReserveItem((int)request["quantity"], (string)request["name"]);
                 if (result != null)
                 {
                     Console.WriteLine(" [.] Reserve product: {0}", result);
@@ -117,7 +120,7 @@ namespace StockManager
                     try
                     {
                         var message = Encoding.UTF8.GetString(body.ToArray());
-                        response = HandleRequest(message, stockManager);
+                        response = stockManager.HandleRequest(message);
                     }
                     catch (Exception e)
                     {

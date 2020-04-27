@@ -1,6 +1,8 @@
 ﻿using UserSDK;
 using StockSDK;
 using System.Collections.Generic;
+using RPC;
+using Newtonsoft.Json;
 
 namespace BillSDK
 {
@@ -8,31 +10,36 @@ namespace BillSDK
     {
         private static float taxe = 0.1f;
 
-        private User user;
-        private List<BillLine> billLines;
-        private float totalHt;
-        private float totalTtc;
+        public User User { get; }
+        public List<BillLine> BillLines { get; }
+        public float TotalHt { get; }
+        public float TotalTtc { get; }
 
         public Bill(User user, List<BillLine> billLines)
         {
-            this.user = user;
-            this.billLines = billLines;
-            this.totalHt = 0;
-            foreach(BillLine billLine in billLines)
+            this.User = user;
+            this.BillLines = billLines;
+            this.TotalHt = 0;
+            foreach (BillLine billLine in billLines)
             {
-                this.totalHt += billLine.Total;
+                this.TotalHt += billLine.Total;
             }
-            this.totalTtc = this.totalHt * (1 + taxe);
+            this.TotalTtc = this.TotalHt * (1 + taxe);
         }
 
         public static Bill CreateBill(User user, List<ItemLine> lines)
         {
-            List<BillLine> billLines = new List<BillLine>();
-            foreach(ItemLine line in lines)
+            Bill result = null;
+            if (user != null && lines != null)
             {
-                billLines.Add(new BillLine(line.Item, line.Quantity));
+                RPCClient rpcClient = new RPCClient();
+                BillRequest request = new BillRequest(lines, user);
+                string response = rpcClient.Call(JsonConvert.SerializeObject(request), "bill_queue");
+                rpcClient.Close();
+                result = JsonConvert.DeserializeObject<Bill>(response);
             }
-            return new Bill(user, billLines);
+            return result;
         }
+        
     }
 }
