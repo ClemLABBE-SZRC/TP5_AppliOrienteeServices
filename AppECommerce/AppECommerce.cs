@@ -47,7 +47,7 @@ namespace AppECommerce
                 Console.WriteLine();
             }
         }
-        private void AddProduct(ItemLine product)
+        private void AddProductToCart(ItemLine product)
         {
             ItemLine existingProduct = cart.Find(item => item.Item.Name == product.Item.Name);
             if (existingProduct == null)
@@ -72,7 +72,7 @@ namespace AppECommerce
             ItemLine reservedItem = (new StockManager()).ReserveItem(quantity, name);
             if (reservedItem != null)
             {
-                AddProduct(reservedItem);
+                AddProductToCart(reservedItem);
                 if (reservedItem.Quantity != quantity)
                 {
                     Console.WriteLine($"Product {name} add to the cart ({reservedItem.Quantity} pieces instead of {quantity})");

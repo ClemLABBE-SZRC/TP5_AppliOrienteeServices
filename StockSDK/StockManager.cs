@@ -9,21 +9,31 @@ namespace StockSDK
     {
         public ItemLine ReserveItem(int quantity, string name)
         {
-            RPCClient rpcClient = new RPCClient();
-            JObject message = new JObject(){
+            ItemLine result = null;
+            if (quantity > 0)
+            {
+                RPCClient rpcClient = new RPCClient();
+                JObject message = new JObject(){
                 {"quantity", quantity},
                 {"name", name}
-            };
-            string response = rpcClient.Call(message.ToString(), "stock_queue");
-            rpcClient.Close();
-            return JsonConvert.DeserializeObject<ItemLine>(response);
+                };
+                string response = rpcClient.Call(message.ToString(), "stock_queue");
+                rpcClient.Close();
+                result = JsonConvert.DeserializeObject<ItemLine>(response);
+            }
+            return result;
         }
         public bool ReleaseItem(ItemLine line)
         {
-            RPCClient rpcClient = new RPCClient();
-            string response = rpcClient.Call(JsonConvert.SerializeObject(line), "stock_queue");
-            rpcClient.Close();
-            return Boolean.Parse(response);
+            bool result = false;
+            if (line != null)
+            {
+                RPCClient rpcClient = new RPCClient();
+                string response = rpcClient.Call(JsonConvert.SerializeObject(line), "stock_queue");
+                rpcClient.Close();
+                result = (Boolean.TryParse(response, out bool parsingRes) && parsingRes);
+            }
+            return result;
         }
     }
 }
