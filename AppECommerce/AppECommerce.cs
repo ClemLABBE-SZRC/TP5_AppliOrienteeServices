@@ -1,4 +1,6 @@
 ﻿using System;
+using UserSDK;
+
 
 namespace AppECommerce
 {
@@ -6,7 +8,25 @@ namespace AppECommerce
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+
+            RpcUser client = new RpcUser();
+
+            User user = User.GetUser("noUser");
+            if (user != null)
+            {
+                Console.WriteLine(user.ToString());
+            }
+            user = User.GetUser("lird");
+            if (user != null)
+            {
+                Console.WriteLine(user.ToString());
+            }
+            user = User.GetUser("kleent");
+            if (user != null)
+            {
+                Console.WriteLine(user.ToString());
+            }
+            client.Close();
         }
     }
 }
