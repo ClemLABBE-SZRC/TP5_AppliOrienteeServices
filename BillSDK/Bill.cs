@@ -1,15 +1,17 @@
-﻿using System;
+﻿using UserSDK;
+using StockSDK;
+using System.Collections.Generic;
 
 namespace BillSDK
 {
     public class Bill
     {
-        private static float taxe = 0.1;
+        private static float taxe = 0.1f;
 
         private User user;
         private List<BillLine> billLines;
-        private int totalHt;
-        private int totalTtc;
+        private float totalHt;
+        private float totalTtc;
 
         public Bill(User user, List<BillLine> billLines)
         {

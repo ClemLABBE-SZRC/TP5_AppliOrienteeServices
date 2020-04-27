@@ -1,4 +1,4 @@
-using System;
+using StockSDK;
 
 namespace BillSDK
 {
@@ -6,17 +6,17 @@ namespace BillSDK
     {
         private Item item;
         private int quantity;
-        private int total;
+        private float total;
 
         public BillLine(Item item, int quantity)
         {
             this.item = item;
             this.quantity = quantity;
-            this.total = item.Price * quantity;
+            this.total = item.UnitPrice * quantity;
         }
 
         public Item Item { get => item; }
         public int Quantity { get => quantity; }
-        public int Total { get => total; }
+        public float Total { get => total; }
     }
 }
