@@ -94,7 +94,8 @@ namespace AppECommerce
         }
         private void PayCart()
         {
-            // Bill bill = Bill.CreateBill(user, cart);
+            Bill bill = Bill.CreateBill(user, cart);
+            Console.WriteLine("Total HT: " + bill.TotalHt + " | Total TTC:" + bill.TotalTtc);
         }
         static void Main(string[] args)
         {
