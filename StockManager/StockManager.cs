@@ -28,7 +28,7 @@ namespace StockManager
                 {
                     stock.Add(new ItemLine(new Item((string)prod["name"], (float)prod["price"]), (int)prod["quantity"]));
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     Console.WriteLine("Fail to load line: {}", prod.ToString());
                 }
@@ -38,7 +38,7 @@ namespace StockManager
         {
             ItemLine result = null;
             ItemLine itemLine = stock.Find(item => item.Item.Name == name);
-            if (itemLine != null)
+            if (itemLine != null && quantity > 0)
             {
                 if (itemLine.Quantity > quantity)
                 {
@@ -50,11 +50,10 @@ namespace StockManager
                     stock.Remove(itemLine);
                     result = itemLine;
                 }
-
             }
             return result;
         }
-        private void ReleaseItem(ItemLine line)
+        private bool ReleaseItem(ItemLine line)
         {
             ItemLine existingItem = stock.Find(item => item.Item.Name == line.Item.Name);
             if (existingItem != null)
@@ -65,6 +64,7 @@ namespace StockManager
             {
                 stock.Add(line);
             }
+            return true;
         }
         public static object HandleRequest(string jsonRequest, StockManager stockManager)
         {
@@ -73,12 +73,20 @@ namespace StockManager
             if (request["Item"] != null)
             {
                 ItemLine itemLine = request.ToObject<ItemLine>();
-                stockManager.ReleaseItem(itemLine);
-                result = true;
+                bool release = stockManager.ReleaseItem(itemLine);
+                if (release)
+                {
+                    Console.WriteLine(" [.] Release product: {0}", itemLine);
+                }
+                result = release;
             }
             else
             {
                 result = stockManager.ReserveItem((int)request["quantity"], (string)request["name"]);
+                if (result != null)
+                {
+                    Console.WriteLine(" [.] Reserve product: {0}", result);
+                }
             }
             return result;
         }
@@ -109,7 +117,6 @@ namespace StockManager
                     try
                     {
                         var message = Encoding.UTF8.GetString(body.ToArray());
-                        Console.WriteLine(" [.] Waiting: {0}", message);
                         response = HandleRequest(message, stockManager);
                     }
                     catch (Exception e)
@@ -118,7 +125,6 @@ namespace StockManager
                     }
                     finally
                     {
-                        Console.WriteLine(response);
                         var responseBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(response));
                         channel.BasicPublish(exchange: "", routingKey: props.ReplyTo,
                           basicProperties: replyProps, body: responseBytes);

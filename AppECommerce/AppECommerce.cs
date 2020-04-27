@@ -21,7 +21,7 @@ namespace AppECommerce
                     Console.WriteLine("No such user founded!");
                 }
             }
-            Console.WriteLine($"Welcome {user.prenom}, {user.nom}");
+            Console.WriteLine($"Welcome {user.prenom}, {user.nom}\n");
         }
         private void ManageShoppingCart()
         {
@@ -47,25 +47,49 @@ namespace AppECommerce
                 Console.WriteLine();
             }
         }
+        private void AddProduct(ItemLine product)
+        {
+            ItemLine existingProduct = cart.Find(item => item.Item.Name == product.Item.Name);
+            if (existingProduct == null)
+            {
+                cart.Add(product);
+            }
+            else
+            {
+                existingProduct.Quantity += product.Quantity;
+            }
+        }
         private void ReserveItem()
         {
-            Console.Write("Item name: ");
+            Console.Write("Product name: ");
             string name = Console.ReadLine();
             int quantity = -1;
             do
             {
-                Console.Write("Item quantity: ");
+                Console.Write("Quantity: ");
             }
             while (!Int32.TryParse(Console.ReadLine(), out quantity) && quantity < 1);
             ItemLine reservedItem = (new StockManager()).ReserveItem(quantity, name);
             if (reservedItem != null)
             {
-                cart.Add(reservedItem);
+                AddProduct(reservedItem);
+                if (reservedItem.Quantity != quantity)
+                {
+                    Console.WriteLine($"Product {name} add to the cart ({reservedItem.Quantity} pieces instead of {quantity})");
+                }
+                else
+                {
+                    Console.WriteLine($"Product {name} add to the cart");
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Product {name} could not be found");
             }
         }
         private void ShowCart()
         {
-            if(cart.Count > 0)
+            if (cart.Count > 0)
             {
                 cart.ForEach(Console.WriteLine);
             }
@@ -82,14 +106,19 @@ namespace AppECommerce
                 ItemLine item = null;
                 while (item == null)
                 {
-                    Console.Write("Item name: ");
+                    Console.Write("Product name: ");
                     string name = Console.ReadLine();
                     item = cart.Find(item => item.Item.Name == name);
                 }
                 if ((new StockManager()).ReleaseItem(item))
                 {
                     cart.Remove(item);
+                    Console.WriteLine($"Product {item.Item.Name} release from the cart");
                 }
+            }
+            else
+            {
+                Console.WriteLine("The cart is empty");
             }
         }
         private void PayCart()
