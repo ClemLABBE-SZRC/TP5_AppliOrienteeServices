@@ -1,4 +1,4 @@
-# TP4 Patrons Modeles
+# TP5 Application orientée services
 
 Ce TP se compose de trois services et une application principale
 
