@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\UserSDK\UserSDK.csproj" />
     <ProjectReference Include="..\StockSDK\StockSDK.csproj" />
+    <ProjectReference Include="..\BillManager\BillManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

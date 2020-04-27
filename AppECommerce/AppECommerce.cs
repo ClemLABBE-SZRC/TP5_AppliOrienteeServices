@@ -10,6 +10,7 @@ namespace AppECommerce
         static void Main(string[] args)
         {
             User user = AuthenticateUser();
+            Console.WriteLine($"Welcome {user.prenom}, {user.nom}");
             List<ItemLine> cart = ManageShoppingCart(user);
             // Bill bill = Bill.CreateBill(user, cart);
         }
@@ -20,10 +21,10 @@ namespace AppECommerce
             {
                 Console.Write("Username: ");
                 string input = Console.ReadLine();
-                result = new User(); //User.GetUser(input);
+                result = User.GetUser(input);
                 if (result == null)
                 {
-                    Console.WriteLine("This user doesn't exist");
+                    Console.WriteLine("No such user founded!");
                 }
             }
             return result;
