@@ -7,31 +7,24 @@ namespace AppECommerce
 {
     class AppECommerce
     {
-        static void Main(string[] args)
+        private List<ItemLine> cart = new List<ItemLine>();
+        private User user;
+        private void AuthenticateUser()
         {
-            User user = AuthenticateUser();
-            Console.WriteLine($"Welcome {user.prenom}, {user.nom}");
-            List<ItemLine> cart = ManageShoppingCart(user);
-            // Bill bill = Bill.CreateBill(user, cart);
-        }
-        private static User AuthenticateUser()
-        {
-            User result = null;
-            while (result == null)
+            while (user == null)
             {
                 Console.Write("Username: ");
                 string input = Console.ReadLine();
-                result = User.GetUser(input);
-                if (result == null)
+                user = User.GetUser(input);
+                if (user == null)
                 {
                     Console.WriteLine("No such user founded!");
                 }
             }
-            return result;
+            Console.WriteLine($"Welcome {user.prenom}, {user.nom}");
         }
-        private static List<ItemLine> ManageShoppingCart(User user)
+        private void ManageShoppingCart()
         {
-            List<ItemLine> result = new List<ItemLine>();
             bool finishing = false;
             while (!finishing)
             {
@@ -39,23 +32,13 @@ namespace AppECommerce
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        ReserveItem(result);
+                        ReserveItem();
                         break;
                     case "2":
-                        if (result.Count > 0)
-                        {
-                            ReleaseItem(result);
-                        }
-                        else
-                        {
-                            Console.WriteLine("The cart is empty");
-                        }
+                        ReleaseItem();
                         break;
                     case "3":
-                        foreach (ItemLine item in result)
-                        {
-                            Console.WriteLine(item);
-                        }
+                        ShowCart();
                         break;
                     case "4":
                         finishing = true;
@@ -63,9 +46,8 @@ namespace AppECommerce
                 }
                 Console.WriteLine();
             }
-            return result;
         }
-        private static void ReserveItem(List<ItemLine> cart)
+        private void ReserveItem()
         {
             Console.Write("Item name: ");
             string name = Console.ReadLine();
@@ -81,20 +63,45 @@ namespace AppECommerce
                 cart.Add(reservedItem);
             }
         }
-
-        private static void ReleaseItem(List<ItemLine> cart)
+        private void ShowCart()
         {
-            ItemLine item = null;
-            while (item == null)
+            if(cart.Count > 0)
             {
-                Console.Write("Item name: ");
-                string name = Console.ReadLine();
-                item = cart.Find(item => item.Item.Name == name);
+                cart.ForEach(Console.WriteLine);
             }
-            if ((new StockManager()).ReleaseItem(item))
+            else
             {
-                cart.Remove(item);
+                Console.WriteLine("The cart is empty");
             }
+        }
+
+        private void ReleaseItem()
+        {
+            if (cart.Count > 0)
+            {
+                ItemLine item = null;
+                while (item == null)
+                {
+                    Console.Write("Item name: ");
+                    string name = Console.ReadLine();
+                    item = cart.Find(item => item.Item.Name == name);
+                }
+                if ((new StockManager()).ReleaseItem(item))
+                {
+                    cart.Remove(item);
+                }
+            }
+        }
+        private void PayCart()
+        {
+            // Bill bill = Bill.CreateBill(user, cart);
+        }
+        static void Main(string[] args)
+        {
+            AppECommerce appClient = new AppECommerce();
+            appClient.AuthenticateUser();
+            appClient.ManageShoppingCart();
+            appClient.PayCart();
         }
     }
 }
