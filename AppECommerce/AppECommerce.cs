@@ -47,6 +47,18 @@ namespace AppECommerce
                 Console.WriteLine();
             }
         }
+        private void AddProduct(ItemLine product)
+        {
+            ItemLine existingProduct = cart.Find(item => item.Item.Name == product.Item.Name);
+            if (existingProduct == null)
+            {
+                cart.Add(product);
+            }
+            else
+            {
+                existingProduct.Quantity += product.Quantity;
+            }
+        }
         private void ReserveItem()
         {
             Console.Write("Product name: ");
@@ -60,7 +72,7 @@ namespace AppECommerce
             ItemLine reservedItem = (new StockManager()).ReserveItem(quantity, name);
             if (reservedItem != null)
             {
-                cart.Add(reservedItem);
+                AddProduct(reservedItem);
                 if (reservedItem.Quantity != quantity)
                 {
                     Console.WriteLine($"Product {name} add to the cart ({reservedItem.Quantity} pieces instead of {quantity})");
@@ -101,6 +113,7 @@ namespace AppECommerce
                 if ((new StockManager()).ReleaseItem(item))
                 {
                     cart.Remove(item);
+                    Console.WriteLine($"Product {item.Item.Name} release from the cart");
                 }
             }
             else
