@@ -1,5 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <ProjectReference Include="..\UserSDK\UserSDK.csproj" />
+    <ProjectReference Include="..\StockSDK\StockSDK.csproj" />
+    <ProjectReference Include="..\BillSDK\BillSDK.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
